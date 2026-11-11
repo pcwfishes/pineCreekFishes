@@ -22,7 +22,7 @@ find_col <- function(pattern) { m <- grep(pattern, nm, ignore.case = TRUE, value
 lat_col    <- find_col("lat")
 lon_col    <- find_col("lon")
 name_col   <- find_col("site.?name|^name$")
-status_col <- find_col("status|sampled")
+status_col <- find_col("^sampled$")
 show_col   <- find_col("show")      # optional: a "Show on website" column with Yes/No
 
 if (is.na(lat_col) || is.na(lon_col)) stop("data/sites.xlsx needs latitude and longitude columns")
