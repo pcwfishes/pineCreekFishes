@@ -1,0 +1,17 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Pine Creek Stream Fishes"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Map
+      - href: about.qmd
+        text: About
+
+format:
+  html:
+    theme: cosmo
+    toc: false

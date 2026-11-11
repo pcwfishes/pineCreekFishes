@@ -1,0 +1,62 @@
+---
+title: "Stream fishes of Pine Creek"
+---
+
+Explore the sampling sites in the Pine Creek watershed (Allegheny County, PA).
+Click a purple dot to learn about a site. Use the layer button (top right of the map) to turn streams and roads on or off.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(leaflet)
+library(sf)
+library(readxl)
+
+# ---- 1. Your site table (edit data/sites.xlsx, then rebuild the site) ----
+sites <- read_excel("data/sites.xlsx")
+nm <- names(sites)
+
+# Find the columns by name (any capitalization)
+find_col <- function(pattern) { m <- grep(pattern, nm, ignore.case = TRUE, value = TRUE); if (length(m)) m[1] else NA }
+lat_col    <- find_col("lat")
+lon_col    <- find_col("lon")
+name_col   <- find_col("site.?name|^name$")
+status_col <- find_col("status|sampled")
+show_col   <- find_col("show")      # optional: a "Show on website" column with Yes/No
+
+if (is.na(lat_col) || is.na(lon_col)) stop("data/sites.xlsx needs latitude and longitude columns")
+
+sites$lat <- as.numeric(sites[[lat_col]])
+sites$lon <- -abs(as.numeric(sites[[lon_col]]))
+sites <- sites[!is.na(sites$lat) & !is.na(sites$lon), ]
+if (!is.na(show_col)) sites <- sites[tolower(trimws(as.character(sites[[show_col]]))) %in% c("yes", "y", "true", "1"), ]
+
+sites$label <- if (!is.na(name_col)) as.character(sites[[name_col]]) else paste("Site", seq_len(nrow(sites)))
+sites$popup <- paste0("<b>", sites$label, "</b>",
+                      if (!is.na(status_col)) paste0("<br>Sampled: ", sites[[status_col]]) else "")
+
+# ---- 2. Map layers (exported from R as geojson) ----
+ws        <- st_read("data/watershed.geojson", quiet = TRUE)
+streams   <- st_read("data/streams_sampleable.geojson", quiet = TRUE)
+streams_a <- st_read("data/streams_all.geojson", quiet = TRUE)
+roads     <- st_read("data/roads.geojson", quiet = TRUE)
+
+# ---- 3. Map ----
+leaflet(sites, height = 650) |>
+  addProviderTiles("Esri.WorldImagery") |>
+  addPolylines(data = streams_a, color = "#00BFFF", weight = 1.5, group = "All streams") |>
+  addPolylines(data = roads, color = "yellow", weight = 1, group = "Roads") |>
+  addPolylines(data = streams, color = "#39FF14", weight = 3, opacity = 0.7,
+               group = "Sampleable streams") |>
+  addPolygons(data = ws, fill = FALSE, color = "white", weight = 3, group = "Watershed boundary") |>
+  addCircleMarkers(~lon, ~lat, radius = 8, color = "white", weight = 2,
+                   fillColor = "#BF00FF", fillOpacity = 1,
+                   label = ~label, popup = ~popup, group = "Sampling sites") |>
+  addLayersControl(
+    overlayGroups = c("Sampling sites", "Sampleable streams", "All streams", "Roads", "Watershed boundary"),
+    options = layersControlOptions(collapsed = TRUE)) |>
+  hideGroup(c("Roads", "All streams"))
+```
+
+*Site locations are approximate. Please respect private property and local regulations.*
