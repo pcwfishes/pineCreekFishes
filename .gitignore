@@ -3,3 +3,6 @@ _site/
 *_files/
 .Rhistory
 .RData
+
+/.quarto/
+**/*.quarto_ipynb

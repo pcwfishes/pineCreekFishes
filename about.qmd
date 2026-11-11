@@ -2,5 +2,45 @@
 title: "About this project"
 ---
 
-Write a short description here: who you are, what you are studying in Pine Creek,
-why stream fishes matter, and how people can learn more or contact you.
+## Who I am
+
+Hello! I'm Claire Heller, a Master of Sustainability student at
+[Chatham University](https://www.chatham.edu) in the
+[Falk College of Environment, Leadership & Management](https://www.chatham.edu/academics/colleges/falk-college-of-environment-leadership-and-management/index.html).
+Dr. Ryan Utz, my thesis advisor, is an aquatic ecologist who focuses on urban streams, salmonids, ecological restoration, and detecting environmental trends at broad spatio-temporal scales. Prior to joining Chatham, Dr. Utz served for four years as an aquatic ecologist at the National Ecological Observatory Network (NEON). Past research projects have included an assessment of river enhancement to improve habitat for Chinook salmon in California's Central Valley, comparing how effects of urbanization on streams differ between ecoregions of Maryland, and exploring bioenergetic patterns of brook trout in West Virginia.
+
+## What I'm studying
+
+Roads passing over streams is not uncommon in Allegheny County. Typically, streams flow beneath bridges or through culverts. This project asks how
+those road-stream crossings affect the fish living in the stream. I'm comparing the fish
+communities just **upstream** and **downstream** of road crossings to see whether they differ,
+which could occur if a crossing makes it harder for fish to pass through. Culverts and bridges can
+block or slow fish movement depending on the structure and the stream bottom (substrate) around it.
+
+## Why stream fishes?
+
+Stream fishes are good indicators of a stream's health and can indicate water pollution, which makes them
+especially useful in urbanized areas. My study area is the Pine Creek watershed in
+Allegheny County, Pennsylvania, just north of Pittsburgh.
+
+## What this map shows
+
+The map shows my sampling sites at road crossings in the Pine Creek watershed. Click a purple dot to
+see a site, and use the layer button on the map to turn streams, roads and the watershed boundary
+on or off.
+
+## How I choose sites
+
+I used mapping data to find places where roads cross small streams, then narrowed them to streams
+that are a workable size for sampling with backpack electrofishing, a method that briefly stuns
+fish so they can be identified and counted. I visit each site in person to confirm it before sampling.
+
+## A note for visitors
+
+Site locations on this map are approximate. Many streams run through private property, so please
+respect landowners, posted signs and local regulations, and don't enter the water or collect fish
+without permission.
+
+## Questions?
+
+Email me at [claire.heller@chatham.edu](mailto:claire.heller@chatham.edu).
