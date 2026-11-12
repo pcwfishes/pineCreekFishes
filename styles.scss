@@ -1,0 +1,56 @@
+/*-- scss:defaults --*/
+// Palette taken from stream fishes
+$stream:   #0b3c49;   // deep stream water
+$riffle:   #1f6f8b;   // clear riffle blue
+$moss:     #6b8f3e;   // streamside moss / creek chub olive
+$fantail:  #e08e2b;   // fantail darter orange
+$rosyside: #e8708a;   // rosyside dace pink
+$sculpin:  #8d6e4f;   // mottled sculpin brown
+$sand:     #f6f2e9;   // gravel / sand
+
+$body-bg:        $sand;
+$body-color:     #1d2d35;
+$link-color:     $riffle;
+$link-hover-color: $fantail;
+$navbar-bg:      $stream;
+$navbar-fg:      $sand;
+$navbar-hl:      #f2b84b;
+$font-family-sans-serif: "Nunito", -apple-system, "Segoe UI", sans-serif;
+$headings-font-family:   "Fraunces", Georgia, serif;
+$headings-color: $stream;
+
+/*-- scss:rules --*/
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito:wght@400;600;700&display=swap');
+
+// Header with a stripe of fish colors
+.navbar {
+  border-bottom: 6px solid;
+  border-image: linear-gradient(90deg, #1f6f8b 0%, #6b8f3e 25%, #e08e2b 50%, #e8708a 75%, #8d6e4f 100%) 1;
+}
+.navbar-brand, .navbar-title { font-family: "Fraunces", Georgia, serif; font-weight: 700; letter-spacing: .3px; }
+.navbar .nav-link { font-weight: 600; }
+.navbar .nav-link.active, .navbar .nav-link:hover { color: #f2b84b !important; }
+
+// Page titles
+h1.title {
+  font-weight: 700;
+  padding-bottom: .35rem;
+  border-bottom: 3px solid $fantail;
+  display: inline-block;
+}
+h2 { margin-top: 2rem; color: $riffle; }
+
+// Map
+.leaflet-container {
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(11, 60, 73, .25);
+}
+
+// Footer
+.nav-footer {
+  background: $stream;
+  color: $sand;
+  border-top: 6px solid $fantail;
+  font-size: .9rem;
+}
+.nav-footer a { color: #f2b84b; }

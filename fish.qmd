@@ -1,0 +1,54 @@
+---
+title: "Fishes of Pine Creek"
+---
+
+Small streams are home to a surprising variety of fishes. These are species found in the
+Pine Creek watershed. Photos and descriptions are added as they are confirmed.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| results: asis
+library(readxl)
+
+fish <- read_excel("data/fishSpecies.xlsx")
+
+# Only show species marked Yes in showOnWebsite (if that column exists)
+if ("showOnWebsite" %in% names(fish)) {
+  fish <- fish[tolower(trimws(as.character(fish$showOnWebsite))) %in% c("yes", "y"), ]
+}
+
+esc <- function(x) { x <- ifelse(is.na(x), "", as.character(x)); gsub("<", "&lt;", x) }
+
+cat('<style>
+.fish-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px;margin-top:24px}
+.fish-card{border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 4px 14px rgba(11,60,73,.15);border-top:6px solid #1f6f8b;transition:transform .15s}
+.fish-card:hover{transform:translateY(-4px)}
+.fish-card:nth-child(5n+1){border-top-color:#1f6f8b}
+.fish-card:nth-child(5n+2){border-top-color:#6b8f3e}
+.fish-card:nth-child(5n+3){border-top-color:#e08e2b}
+.fish-card:nth-child(5n+4){border-top-color:#e8708a}
+.fish-card:nth-child(5n){border-top-color:#8d6e4f}
+.fish-card img{width:100%;height:170px;object-fit:cover;display:block;background:#dfeaee}
+.fish-ph{height:170px;background:linear-gradient(135deg,#dfeaee,#f6f2e9);display:flex;align-items:center;justify-content:center;color:#6a8794;font-size:14px}
+.fish-body{padding:14px 16px}
+.fish-body h3{margin:0 0 2px 0;font-size:1.15rem;color:#0b3c49}
+.fish-sci{font-style:italic;color:#6b6b6b;margin-bottom:8px;font-size:.92rem}
+.fish-credit{font-size:.75rem;color:#777;margin-top:8px}
+</style><div class="fish-grid">')
+
+for (i in seq_len(nrow(fish))) {
+  r <- fish[i, ]
+  photo <- if ("photo" %in% names(r) && !is.na(r$photo) && nzchar(r$photo))
+    sprintf('<img src="data/photos/%s" alt="%s">', r$photo, esc(r$commonName))
+  else '<div class="fish-ph">Photo coming soon</div>'
+  credit <- if ("photoCredit" %in% names(r) && !is.na(r$photoCredit))
+    sprintf('<div class="fish-credit">Photo: %s</div>', esc(r$photoCredit)) else ""
+  desc <- if ("description" %in% names(r)) esc(r$description) else ""
+  sci  <- if ("scientificName" %in% names(r)) esc(r$scientificName) else ""
+  cat(sprintf('<div class="fish-card">%s<div class="fish-body"><h3>%s</h3><div class="fish-sci">%s</div><div>%s</div>%s</div></div>',
+              photo, esc(r$commonName), sci, desc, credit))
+}
+cat("</div>")
+```

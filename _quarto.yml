@@ -5,13 +5,18 @@ project:
 website:
   title: "Pine Creek Stream Fishes"
   navbar:
+    background: primary
     left:
       - href: index.qmd
         text: Map
+      - href: fish.qmd
+        text: Fishes of Pine Creek
       - href: about.qmd
         text: About
+  page-footer:
+    center: "Claire Heller · Chatham University · Falk College of Environment, Leadership & Management"
 
 format:
   html:
-    theme: cosmo
+    theme: [cosmo, styles.scss]
     toc: false
