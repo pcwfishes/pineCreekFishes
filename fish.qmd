@@ -2,53 +2,76 @@
 title: "Fishes of Pine Creek"
 ---
 
-Small streams are home to a surprising variety of fishes. These are species found in the
-Pine Creek watershed. Photos and descriptions are added as they are confirmed.
+Fish species documented at field-verified sites in the Pine Creek watershed, Allegheny County, PA.
 
 ```{r}
 #| echo: false
-#| message: false
 #| warning: false
+#| message: false
 #| results: asis
+
 library(readxl)
+library(htmltools)
 
 fish <- read_excel("data/fishSpecies.xlsx")
+names(fish) <- tolower(gsub("[^A-Za-z]", "", names(fish)))
 
-# Only show species marked Yes in showOnWebsite (if that column exists)
-if ("showOnWebsite" %in% names(fish)) {
-  fish <- fish[tolower(trimws(as.character(fish$showOnWebsite))) %in% c("yes", "y"), ]
+# Find columns flexibly (works with commonName, common_name, Common Name, etc.)
+pick <- function(pattern) {
+  hit <- grep(pattern, names(fish), value = TRUE)
+  if (length(hit) == 0) NA_character_ else hit[1]
+}
+col_common <- pick("common|^species$|^name$")
+col_sci    <- pick("scientific|latin")
+col_desc   <- pick("descri")
+col_show   <- pick("showonwebsite|show")
+col_img    <- pick("image|photo|picture")
+col_credit <- pick("credit")
+
+has_val <- function(x) !is.na(x) && nzchar(trimws(as.character(x)))
+
+# Match a photo to a file in images/ even if the spreadsheet entry has a
+# different extension, capitalization, or folder, or is blank (falls back to
+# the species name, e.g. "Creek Chub" -> creekchub.jpg)
+find_img <- function(photo, common) {
+  files <- list.files("images")
+  keys <- tolower(tools::file_path_sans_ext(files))
+  cand <- c(
+    if (has_val(photo)) tolower(tools::file_path_sans_ext(basename(trimws(photo)))),
+    tolower(gsub("[^A-Za-z]", "", common))
+  )
+  for (k in cand) {
+    j <- match(k, keys)
+    if (!is.na(j)) return(file.path("images", files[j]))
+  }
+  NA_character_
 }
 
-esc <- function(x) { x <- ifelse(is.na(x), "", as.character(x)); gsub("<", "&lt;", x) }
-
-cat('<style>
-.fish-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px;margin-top:24px}
-.fish-card{border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 4px 14px rgba(11,60,73,.15);border-top:6px solid #1f6f8b;transition:transform .15s}
-.fish-card:hover{transform:translateY(-4px)}
-.fish-card:nth-child(5n+1){border-top-color:#1f6f8b}
-.fish-card:nth-child(5n+2){border-top-color:#6b8f3e}
-.fish-card:nth-child(5n+3){border-top-color:#e08e2b}
-.fish-card:nth-child(5n+4){border-top-color:#e8708a}
-.fish-card:nth-child(5n){border-top-color:#8d6e4f}
-.fish-card img{width:100%;height:170px;object-fit:cover;display:block;background:#dfeaee}
-.fish-ph{height:170px;background:linear-gradient(135deg,#dfeaee,#f6f2e9);display:flex;align-items:center;justify-content:center;color:#6a8794;font-size:14px}
-.fish-body{padding:14px 16px}
-.fish-body h3{margin:0 0 2px 0;font-size:1.15rem;color:#0b3c49}
-.fish-sci{font-style:italic;color:#6b6b6b;margin-bottom:8px;font-size:.92rem}
-.fish-credit{font-size:.75rem;color:#777;margin-top:8px}
-</style><div class="fish-grid">')
-
-for (i in seq_len(nrow(fish))) {
-  r <- fish[i, ]
-  photo <- if ("photo" %in% names(r) && !is.na(r$photo) && nzchar(r$photo))
-    sprintf('<img src="data/photos/%s" alt="%s">', r$photo, esc(r$commonName))
-  else '<div class="fish-ph">Photo coming soon</div>'
-  credit <- if ("photoCredit" %in% names(r) && !is.na(r$photoCredit))
-    sprintf('<div class="fish-credit">Photo: %s</div>', esc(r$photoCredit)) else ""
-  desc <- if ("description" %in% names(r)) esc(r$description) else ""
-  sci  <- if ("scientificName" %in% names(r)) esc(r$scientificName) else ""
-  cat(sprintf('<div class="fish-card">%s<div class="fish-body"><h3>%s</h3><div class="fish-sci">%s</div><div>%s</div>%s</div></div>',
-              photo, esc(r$commonName), sci, desc, credit))
+if (!is.na(col_show)) {
+  fish <- fish[tolower(trimws(as.character(fish[[col_show]]))) == "yes", ]
 }
-cat("</div>")
+
+if (nrow(fish) == 0) {
+  cat("*Species list coming soon.*")
+} else {
+  fish <- fish[order(fish[[col_common]]), ]
+  cards <- lapply(seq_len(nrow(fish)), function(i) {
+    img_path <- find_img(if (!is.na(col_img)) fish[[col_img]][i] else NA,
+                         fish[[col_common]][i])
+    credit   <- if (!is.na(col_credit)) fish[[col_credit]][i] else NA
+    div(class = "fish-card",
+        if (has_val(img_path) && file.exists(img_path))
+          tags$img(src = img_path, alt = fish[[col_common]][i],
+                   style = "width:100%; border-radius:4px; margin-bottom:0.6rem;"),
+        if (has_val(img_path) && file.exists(img_path) && has_val(credit))
+          div(style = "font-size:0.75rem; color:#777; margin:-0.4rem 0 0.6rem 0;",
+              paste("Photo:", credit)),
+        h3(fish[[col_common]][i]),
+        if (!is.na(col_sci)) div(class = "sci-name", fish[[col_sci]][i]),
+        if (!is.na(col_desc)) p(fish[[col_desc]][i]))
+  })
+  html <- as.character(div(class = "fish-grid", cards))
+  # Wrap as a raw HTML block so Quarto doesn't re-interpret the text
+  cat("```{=html}\n", html, "\n```\n", sep = "")
+}
 ```

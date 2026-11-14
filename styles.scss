@@ -1,56 +1,99 @@
 /*-- scss:defaults --*/
-// Palette taken from stream fishes
-$stream:   #0b3c49;   // deep stream water
-$riffle:   #1f6f8b;   // clear riffle blue
-$moss:     #6b8f3e;   // streamside moss / creek chub olive
-$fantail:  #e08e2b;   // fantail darter orange
-$rosyside: #e8708a;   // rosyside dace pink
-$sculpin:  #8d6e4f;   // mottled sculpin brown
-$sand:     #f6f2e9;   // gravel / sand
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Merriweather:wght@400;700&display=swap');
 
-$body-bg:        $sand;
-$body-color:     #1d2d35;
-$link-color:     $riffle;
-$link-hover-color: $fantail;
-$navbar-bg:      $stream;
-$navbar-fg:      $sand;
-$navbar-hl:      #f2b84b;
-$font-family-sans-serif: "Nunito", -apple-system, "Segoe UI", sans-serif;
-$headings-font-family:   "Fraunces", Georgia, serif;
-$headings-color: $stream;
+$teal: #1f7a8c;
+$orange: #e8833a;
+$olive: #7a8450;
+$cream: #f7f4ee;
+
+$primary: $teal;
+$body-bg: #ffffff;
+$body-color: #2b2b2b;
+$link-color: $teal;
+$font-family-sans-serif: 'Lato', -apple-system, 'Segoe UI', sans-serif;
+$headings-font-family: 'Merriweather', Georgia, serif;
+$navbar-bg: $teal;
+$navbar-fg: #ffffff;
+$navbar-hl: $orange;
 
 /*-- scss:rules --*/
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Nunito:wght@400;600;700&display=swap');
 
-// Header with a stripe of fish colors
+/* Teal header with a fish-color stripe along the bottom */
 .navbar {
-  border-bottom: 6px solid;
-  border-image: linear-gradient(90deg, #1f6f8b 0%, #6b8f3e 25%, #e08e2b 50%, #e8708a 75%, #8d6e4f 100%) 1;
+  background-color: $teal !important;
+  border-bottom: 6px solid transparent;
+  border-image: linear-gradient(
+    to right,
+    #e8833a 0%, #e8833a 20%,
+    #c9543a 20%, #c9543a 35%,
+    #7a8450 35%, #7a8450 60%,
+    #2f5d8a 60%, #2f5d8a 80%,
+    #f2e3a9 80%, #f2e3a9 100%
+  ) 1;
 }
-.navbar-brand, .navbar-title { font-family: "Fraunces", Georgia, serif; font-weight: 700; letter-spacing: .3px; }
-.navbar .nav-link { font-weight: 600; }
-.navbar .nav-link.active, .navbar .nav-link:hover { color: #f2b84b !important; }
 
-// Page titles
-h1.title {
-  font-weight: 700;
-  padding-bottom: .35rem;
-  border-bottom: 3px solid $fantail;
+.navbar .navbar-brand,
+.navbar .nav-link,
+.navbar .navbar-title {
+  color: #ffffff !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: $orange !important;
+}
+
+/* Orange underline under every page title */
+h1.title,
+.quarto-title h1 {
+  font-family: 'Merriweather', Georgia, serif;
+  color: $teal;
   display: inline-block;
-}
-h2 { margin-top: 2rem; color: $riffle; }
-
-// Map
-.leaflet-container {
-  border-radius: 14px;
-  box-shadow: 0 6px 20px rgba(11, 60, 73, .25);
+  padding-bottom: 0.3rem;
+  border-bottom: 4px solid $orange;
+  margin-bottom: 1.2rem;
 }
 
-// Footer
+h2, h3 {
+  color: $teal;
+}
+
+/* Footer */
 .nav-footer {
-  background: $stream;
-  color: $sand;
-  border-top: 6px solid $fantail;
-  font-size: .9rem;
+  background-color: $cream;
+  border-top: 4px solid $teal;
+  color: #555555;
 }
-.nav-footer a { color: #f2b84b; }
+
+/* Fish species cards */
+.fish-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+}
+
+.fish-card {
+  background: $cream;
+  border-left: 6px solid $orange;
+  border-radius: 6px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.fish-card h3 {
+  margin: 0 0 0.1rem 0;
+  font-size: 1.15rem;
+  color: $teal;
+}
+
+.fish-card .sci-name {
+  font-style: italic;
+  color: $olive;
+  margin-bottom: 0.6rem;
+}
+
+.fish-card p {
+  margin: 0;
+  font-size: 0.95rem;
+}
